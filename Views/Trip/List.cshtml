@@ -1,0 +1,45 @@
+﻿@model IEnumerable<TripPost>
+
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_FactoryLayout.cshtml";
+}
+
+<link href="~/css/site.css" rel="stylesheet" />
+
+<h4 class="text-center text-uppercase">list of your trips</h4>
+
+<div class="whiteBackground border">
+    <div>
+        @if (Model.Count() == 0)
+        {
+            <p class="text-danger">There is 0 Post...</p>
+        }
+        else
+        {
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style="text-align:center">Trip Name</th>
+                        <th style="text-align:center">@Html.DisplayNameFor(model => model.PostDate)</th>
+                        <th style="text-align:center">Edit / Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="text-align:center">@item.AgencyName</td>
+                            <td style="text-align:center">@item.PostDate</td>
+                            <td style="width:150px; text-align:center">
+                                <partial name="_OperationsButtonsPartial" model="item.Id" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+

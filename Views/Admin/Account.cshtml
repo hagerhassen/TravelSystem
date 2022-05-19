@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Admin-Account";
+    Layout = "_AdminLayout";
+}
+@model AdminAccountViewModel
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        bsCustomFileInput.init()
+
+        var btn = document.getElementById('btnResetForm')
+        var form = document.querySelector('form')
+        btn.addEventListener('click', function () {
+            form.reset()
+        });
+    </script>
+}
+
+@section Choosen {
+    <ul class="nav">
+        <li>
+            <a asp-controller="Admin" asp-action="Index">
+                <i class="nc-icon nc-bank"></i>
+                <p style="font-weight: 600;">Dashboard</p>
+            </a>
+        </li>
+        <li class="active ">
+            <a asp-controller="Admin" asp-action="Account">
+                <i class="nc-icon nc-single-02"></i>
+                <p style="font-weight: 600;">Account</p>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="Admin" asp-action="Users">
+                <i class="nc-icon nc-user-run"></i>
+                <p style="font-weight: 600;">Users</p>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="Admin" asp-action="Posts">
+                <i class="nc-icon nc-album-2"></i>
+                <p style="font-weight: 600;">Posts</p>
+            </a>
+        </li>
+    </ul>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card card-user">
+            <div class="image">
+                <img src="~/Images/default-cover.jpg" />
+            </div>
+            <div class="card-body">
+                <div class="author image-container">
+                    <a asp-controller="Admin" asp-action="Account">
+                        @if (Model.CurrentPhotoPath == null)
+                        {
+                            <img class="avatar border-gray image" src="~/Images/default-avatar.png" />
+                        }
+                        else
+                        {
+                            <img class="avatar border-gray image" src="~/Images/Avatars/@Model.CurrentPhotoPath" />
+                        }
+                        <h5 class="title">@Model.FirstName @Model.LastName</h5>
+                    </a>
+                    <p class="description">
+                        @@@Model.UserName
+                    </p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <hr>
+                <div class="button-container">
+                    <div class="row">
+                        <div class="update ml-auto mr-auto">
+                            <a asp-controller="Admin" asp-action="DeleteProfilePic" asp-route-UserID="@Model.UserID" class="btn btn-danger btn-round">Delete ProfilePic</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card card-user">
+            <div class="card-header">
+                <h5 class="card-title">Edit Profile</h5>
+            </div>
+            <div class="card-body">
+                <form enctype="multipart/form-data" asp-controller="Admin" asp-action="UpdateAccount" method="post">
+                    <input type="hidden" asp-for="UserID" />
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label asp-for="UserName"></label>
+                            <input asp-for="UserName" class="form-control" readonly />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="Email"></label>
+                            <input asp-for="Email" class="form-control" readonly />
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label asp-for="PhoneNumber"></label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="FirstName"></label>
+                            <input asp-for="FirstName" class="form-control" placeholder="FirstName" />
+                            <span asp-validation-for="FirstName" class="field-validation-error"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="LastName"></label>
+                            <input asp-for="LastName" class="form-control" placeholder="LastName" />
+                            <span asp-validation-for="LastName" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CurrentPassword"></label>
+                        <input asp-for="CurrentPassword" class="form-control" />
+                        <span asp-validation-for="CurrentPassword" class="field-validation-error"></span>
+                        <span class="field-validation-error">@Model.ErrorInPassword</span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="UpdatePassword"></label>
+                        <input asp-for="UpdatePassword" class="form-control" />
+                        <span asp-validation-for="UpdatePassword" class="field-validation-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="confirmUpdatedPassword"></label>
+                        <input asp-for="confirmUpdatedPassword" class="form-control" />
+                        <span asp-validation-for="confirmUpdatedPassword" class="field-validation-error"></span>
+                    </div>
+                    <input type="hidden" asp-for="CurrentPhotoPath" />
+                    <div class="custom-file">
+                        <input asp-for="Photo" class="custom-file-input" />
+                        <label asp-for="Photo" class="custom-file-label"></label>
+                        <span asp-validation-for="Photo" class="field-validation-error"></span>
+                    </div>
+                    <div class="row">
+                        <div class="update ml-auto mr-auto">
+                            <button type="submit" class="btn btn-primary btn-round">Update Profile</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

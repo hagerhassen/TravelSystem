@@ -1,0 +1,272 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_WallLayout";
+    ViewBag.Nav = "transparent";
+    ViewBag.footer = true;
+    var Posts = ViewBag.Posts as List<TripPost>;
+}
+
+@inject SignInManager<ApplicationUser> signInManager 
+@inject UserManager<ApplicationUser> userManager
+@inject AppDBContext db
+
+
+@{       
+
+    ApplicationUser user = null;
+    if (signInManager.IsSignedIn(User))
+    {
+        user = await userManager.FindByNameAsync(User.Identity.Name);
+    }
+
+
+    List<TripPost> Likedposts = null;
+    if (signInManager.IsSignedIn(User)) {
+        Likedposts = db.Users
+            .Where(e => e.UserName == User.Identity.Name)
+            .SelectMany(e=>e.LikedPosts.Select(e=>e.post))
+            .ToList();
+    }
+
+    List<TripPost> Dislikedposts = null;
+    if (signInManager.IsSignedIn(User))
+    {
+        Dislikedposts = db.Users
+            .Where(e => e.UserName == User.Identity.Name)
+            .SelectMany(e => e.DislikedPosts.Select(e => e.post))
+            .ToList();
+    }
+
+    List<TripPost> savedPosts = null;
+    if (signInManager.IsSignedIn(User))
+    {
+        savedPosts = db.Users
+            .Where(e => e.UserName == User.Identity.Name)
+            .SelectMany(e => e.SavedPosts.Select(e => e.post))
+            .ToList();
+    }
+    }
+
+@section DropDown{
+    <div class="dropdown-menu dropdown-menu-right dropdown-danger">
+        @if (!signInManager.IsSignedIn(User))
+        {
+            <partial name="_SignInForm" />
+            <partial name="_register" />
+        }
+        else
+        {
+            if (await userManager.IsInRoleAsync(user, "Traveler"))
+            {
+                <a asp-controller="Home" asp-action="SavedPosts" class="dropdown-item">
+                    Saved
+                </a>
+            }
+            if (await userManager.IsInRoleAsync(user, "Agency"))
+            {
+                <a asp-controller="Agent" asp-action="index" class="dropdown-item">
+                    Agency
+                </a>
+            }
+
+            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">
+                Logout
+            </a>
+        }
+    </div>
+}
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/moment.min.js"></script>
+    <script src="~/js/bootstrap-datetimepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            if ($("#datetimepicker").length != 0) {
+                $('#datetimepicker').datetimepicker({
+                    format: 'DD/MM/YYYY',
+                    icons: {
+                        time: "fa fa-clock-o",
+                        date: "fa fa-calendar",
+                        up: "fa fa-chevron-up",
+                        down: "fa fa-chevron-down",
+                        previous: 'fa fa-chevron-left',
+                        next: 'fa fa-chevron-right',
+                        today: 'fa fa-screenshot',
+                        clear: 'fa fa-trash',
+                        close: 'fa fa-remove'
+                    }
+                });
+            }
+        });
+        $(document).ready(function () {
+            var uri = window.location.toString();
+            if (uri.indexOf("?") > 0) {
+                var clean_uri = uri.substring(0, uri.indexOf("?"));
+                window.history.replaceState({}, document.title, clean_uri);
+            }
+        });
+    </script>
+}
+
+<div class="header">
+    <div class="page-header" style="background-image: url('https://images.unsplash.com/photo-1498475932703-000eb46e6375?dpr=2&amp;auto=format&amp;fit=crop&amp;w=1500&amp;h=1000&amp;q=80&amp;cs=tinysrgb&amp;crop=');">
+        <div class="filter"></div>
+        <div class="content-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 ml-auto mr-auto text-center">
+                        <h1 class="title"> Find your next trip</h1>
+                        <h5 class="description">
+                            Now we can help you find the perfect Trip for you by searching or by viewing all avalible posts
+                        </h5>
+                        <br>
+                    </div>
+                    <div class="col-md-10 ml-auto mr-auto">
+                        <div class="card card-raised card-form-horizontal no-transition">
+                            <div class="card-body">
+                                <form asp-controller="Home" asp-action="Index" method="get">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <input type="text" value="@ViewBag.Destination" placeholder="Destination" name="Destination" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <input type="text" value="@ViewBag.Agency" placeholder="Agency Name"  name="Agency" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-group date" id="datetimepicker">
+                                                <input type="text" value="@ViewBag.Date" class="form-control datetimepicker" placeholder="" name="Date">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                        <span class="glyphicon glyphicon-calendar"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="submit" class="btn btn-danger btn-block"><i class="nc-icon nc-zoom-split"></i> &nbsp; Search</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (Posts.Count != 0)
+{
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-12 ml-auto mr-auto text-center">
+                <h2 class="discover-title"><small>Discover Trips</small></h2>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            @foreach (var post in Posts)
+            {
+
+
+
+                <div class="col-lg-4 col-md-6 text-center">
+                    <div class="card no-transition">
+                        <div class="card-header bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="mr-2">
+                                        @if (post.Owner.PhotoPath == null)
+                                        {
+                                            <img class="rounded-circle" width="45" src="~/Images/default-avatar.png" alt="">
+                                        }
+                                        else
+                                        {
+                                            <img class="rounded-circle" width="45" src="~/Images/Avatars/@post.Owner.PhotoPath" alt="">
+                                        }
+                                    </div>
+                                    <div class="ml-2">
+                                        <div class="h5 m-0" style="font-weight: bold; color: #f5593d;">@@@post.AgencyName</div>
+                                        <div class="h7 text-muted">@post.Title</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    @if ((signInManager.IsSignedIn(User))&& (savedPosts.Find(e => e.Id == post.Id) == null))
+                                    {
+                                        <div class="dropdown">
+                                            <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-h"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
+                                                <a class="dropdown-item" asp-controller="Home" asp-action="SavePost" asp-route-UserName="@User.Identity.Name" asp-route-postId="@post.Id">Save</a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-image">
+                            @if (post.PhotoPath == null)
+                            {
+                                <img class="img" style="border-radius:0px;width:100%;height:250px;" src="~/Images/default-cover.jpg">
+                            }
+                            else
+                            {
+                                <img class="img" style="border-radius: 0px; width: 100%; height: 250px;" src="~/Images/Posts/@post.PhotoPath" />
+                            }
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-left">
+                                @post.Destination
+                            </h5>
+
+                            <p class="card-text text-left">
+                                @post.Details
+                            </p>
+                            <div class="stats">
+                                <i class="fa fa-thumbs-up" aria-hidden="true"></i><span style="font-weight:bold;">@post.Likedby.Count</span>
+                                <i class="fa fa-thumbs-down" aria-hidden="true"></i><span style="font-weight:bold;"> @post.Dislikedby.Count </span>
+                                <i class="fa fa-calendar" aria-hidden="true"></i><span style="font-weight:bold;">@post.Date </span>
+                            </div>
+                        </div>
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                    <div class="card-footer">
+                        @if (Likedposts.Find(e => e.Id == post.Id) == null)
+                        {
+                            <a asp-controller="Home" asp-action="likePost" asp-route-UserName="@User.Identity.Name" asp-route-postId="@post.Id" class="card-link btn btn-info btn-link" style="color:black;"><i class="fa fa-thumbs-up"></i> Like</a>
+                        }
+                        else
+                        {
+                            <span style="color: #51bcda;"><i class="fa fa-thumbs-up"></i> Liked</span>
+                        }
+
+                        @if (Dislikedposts.Find(e => e.Id == post.Id) == null)
+                        {
+                            <a asp-controller="Home" asp-action="DislikePost" asp-route-UserName="@User.Identity.Name" asp-route-postId="@post.Id" class="card-link btn btn-info btn-link btn-danger" style="color:black;"><i class="fa fa-thumbs-down"></i> Dislike</a>
+                        }
+                        else
+                        {
+                            <span style="color: #f5593d;"><i class="fa fa-thumbs-down"></i> Disliked</span>
+                        }
+                    </div>
+                        }
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+}
+
+

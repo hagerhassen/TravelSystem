@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        Travel System
+    </title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="~/fonts/Project.css" rel="stylesheet" />
+    <link href="~/css/CustomStyleSheet.css" rel="stylesheet" />
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/paper-kit.min.css" rel="stylesheet" />
+</head>
+
+<body class="index-page">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-@ViewBag.Nav" color-on-scroll="500">
+        <div class="container">
+            <div class="navbar-translate">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index" rel="tooltip" title="Travel System" data-placement="bottom">
+                    Travel System
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-bar bar1"></span>
+                    <span class="navbar-toggler-bar bar2"></span>
+                    <span class="navbar-toggler-bar bar3"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" data-color="orange">
+                <ul class="navbar-nav ml-auto">
+                    <li class="dropdown nav-item">
+                        <span style="cursor:pointer;" class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false">
+                            Account
+                        </span>
+                        @RenderSection("DropDown",required:true)
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+     @RenderBody()
+    @if (ViewBag.footer)
+    {
+    <footer class="footer footer-black">
+        <div class="container-fluid">
+            <div class="row">
+                <nav class="footer-nav">
+                    <ul>
+                        <li><a href="#" target="_blank">About Us</a></li>
+                    </ul>
+                </nav>
+                <div class="credits ml-auto">
+                    <span class="copyright">
+                        ©
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script>, made with <i class="fa fa-heart heart"></i> by Hager Hassen
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    }
+    <!--   Core JS Files   -->
+
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script src="~/js/paper-kit.min7317.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

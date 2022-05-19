@@ -1,0 +1,87 @@
+﻿@model TripAndAgentVM
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_FactoryLayout.cshtml";
+}
+
+<br />
+<h2 class="text-info">Create Trip Post</h2>
+<br />
+
+<partial name="_StatusMessage" model="Model.statusMessage" />
+
+<div class="whiteBackground border row">
+    <div class="col-8 border-right">
+        <form asp-action="Create" method="post">
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.AgencyName">Trip Name</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" asp-for="Trip.AgencyName" />
+                    <span class="text-danger" asp-validation-for="Trip.AgencyName"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.Title">Trip Tilte</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" asp-for="Trip.Title" />
+                    <span class="text-danger" asp-validation-for="Trip.Title"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.Destination">Trip Destination</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" asp-for="Trip.Destination" />
+                    <span class="text-danger" asp-validation-for="Trip.Destination"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.Details">Trip Destails</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" asp-for="Trip.Details" />
+                    <span class="text-danger" asp-validation-for="Trip.Details"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.Date">Trip Date</label>
+                </div>
+                <div class="col-8">
+                    <input type="date" class="form-control" asp-for="Trip.Date" />
+                    <span class="text-danger" asp-validation-for="Trip.Date"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.PostDate">Post Date</label>
+                </div>
+                <div class="col-8">
+                    <input type="date" class="form-control" asp-for="Trip.PostDate" />
+                    <span class="text-danger" asp-validation-for="Trip.PostDate"></span>
+                </div>
+            </div>
+            <!-- Image Input-->
+            <br />
+            <div class="form-group row">
+                <div class="col-8 offset-3">
+                    <partial name="_CreateAndBackButtonsPartial" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

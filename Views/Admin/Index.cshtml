@@ -1,0 +1,148 @@
+﻿@{
+    ViewData["Title"] = "Admin";
+    Layout = "_AdminLayout";
+}
+
+@model AdminDashBoardViewModel
+
+
+
+@section Choosen {
+    <ul class="nav">
+        <li class="active ">
+            <a asp-controller="Admin" asp-action="Index">
+                <i class="nc-icon nc-bank"></i>
+                <p style="font-weight: 600;">Dashboard</p>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="Admin" asp-action="Account">
+                <i class="nc-icon nc-single-02"></i>
+                <p style="font-weight: 600;">Account</p>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="Admin" asp-action="Users">
+                <i class="nc-icon nc-user-run"></i>
+                <p style="font-weight: 600;">Users</p>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="Admin" asp-action="Posts">
+                <i class="nc-icon nc-album-2"></i>
+                <p style="font-weight: 600;">Posts</p>
+            </a>
+        </li>
+    </ul>
+}
+
+<div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-5 col-md-4">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="nc-icon nc-badge text-warning"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                        <div class="numbers">
+                            <p class="card-category">Travelers</p>
+                            <p class="card-title">@Model.TravelersNumber</p><p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-refresh"></i>
+                    Updated Now
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-5 col-md-4">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="nc-icon nc-world-2 text-success"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                        <div class="numbers">
+                            <p class="card-category">Agencies</p>
+                            <p class="card-title">@Model.AgenciesNumber</p><p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-refresh"></i>
+                    Updated Now
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-5 col-md-4">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="nc-icon nc-album-2 text-danger"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                        <div class="numbers">
+                            <p class="card-category">Posts</p>
+                            <p class="card-title">@Model.PostsNumber</p><p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-refresh"></i>
+                    Updated Now
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-5 col-md-4">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="nc-icon nc-layout-11 text-primary"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                        <div class="numbers">
+                            <p class="card-category">Accepted Posts</p>
+                            <p class="card-title">@Model.AcceptedPostsNumber</p><p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-refresh"></i>
+                    Updated Now
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

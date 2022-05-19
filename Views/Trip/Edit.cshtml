@@ -1,0 +1,132 @@
+﻿@model TripAndAgentVM
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_FactoryLayout.cshtml";
+}
+
+
+<br />
+<h2 class="text-info">Edit Trip Post</h2>
+<br />
+
+<partial name="_StatusMessage" model="Model.statusMessage" />
+
+<div class="whiteBackground border row">
+    <div class="col-8 border-right">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Trip.Id" />
+            <input type="hidden" asp-for="Trip.OwnerID" />
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.OwnerID">Agent Username</label>
+                </div>
+                <div class="col-5">
+                    <select class="form-control" id="ddlAgents" disabled asp-for="Trip.OwnerID"
+                            asp-items="@(new SelectList(Model.agentsList,"Id","UserName"))"></select>
+                    <span class="text-danger" asp-validation-for="Trip.OwnerID"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.AgencyName">Trip Name</label>
+                </div>
+                <div class="col-5">
+                    <input type="text" class="form-control" asp-for="Trip.AgencyName" />
+                    <span class="text-danger" asp-validation-for="Trip.AgencyName"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.Title">Trip Tilte</label>
+                </div>
+                <div class="col-5">
+                    <input type="text" class="form-control" asp-for="Trip.Title" />
+                    <span class="text-danger" asp-validation-for="Trip.Title"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.Destination">Trip Destination</label>
+                </div>
+                <div class="col-5">
+                    <input type="text" class="form-control" asp-for="Trip.Destination" />
+                    <span class="text-danger" asp-validation-for="Trip.Destination"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.Details">Trip Destails</label>
+                </div>
+                <div class="col-5">
+                    <input type="text" class="form-control" asp-for="Trip.Details" />
+                    <span class="text-danger" asp-validation-for="Trip.Details"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.Date">Trip Date</label>
+                </div>
+                <div class="col-5">
+                    <input type="date" class="form-control" asp-for="Trip.Date" />
+                    <span class="text-danger" asp-validation-for="Trip.Date"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label class="col-form-label" asp-for="Trip.PostDate">Post Date</label>
+                </div>
+                <div class="col-5">
+                    <input type="date" class="form-control" asp-for="Trip.PostDate" />
+                    <span class="text-danger" asp-validation-for="Trip.PostDate"></span>
+                </div>
+            </div>
+            <!-- Image Input-->
+            <div class="form-group row">
+                <div class="col-5 offset-3">
+                    <partial name="_CreateAndBackButtonsPartial" />
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-3 offset-1">
+        <p>Existing Trips :</p>
+        <div id="divTripsList"></div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function UpdateTrips()
+        {
+            var selectedAgent = document.getElementById("ddlAgents").value;
+            $list = $('#divTripsList');
+            $.ajax({
+                url: '/TripAgency/Trip/GetTripsRelatedToAgent/' + selectedAgent,
+                type: 'GET',
+                dataType: 'text',
+                success: function (data) {
+                    result = JSON.parse(data);
+                    $list.html('');
+                    $list.append('<ul class="list-group">')
+                    for (i in result) {
+                        $list.append('<li class="list-group-item">' + result[i].text + '</li>')
+                    }
+                    $list.append('</ul>')
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            UpdateTrips();
+        });
+
+    </script>
+}

@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = "Posts";
+    Layout = "_AdminLayout";
+}
+@model List<TripPost>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/holder.min.js"></script>
+    <script src="~/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#datatable').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                responsive: true
+
+            })
+        });
+        Holder.addTheme('gray', {
+            bg: '#777',
+            fg: 'rgba(255,255,255,.75)',
+            font: 'Helvetica',
+            fontweight: 'normal'
+        });
+    </script>
+}
+
+@section Choosen {
+    <ul class="nav">
+        <li>
+            <a asp-controller="Admin" asp-action="Index">
+                <i class="nc-icon nc-bank"></i>
+                <p style="font-weight: 600;">Dashboard</p>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="Admin" asp-action="Account">
+                <i class="nc-icon nc-single-02"></i>
+                <p style="font-weight: 600;">Account</p>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="Admin" asp-action="Users">
+                <i class="nc-icon nc-user-run"></i>
+                <p style="font-weight: 600;">Users</p>
+            </a>
+        </li>
+        <li class="active ">
+            <a asp-controller="Admin" asp-action="Posts">
+                <i class="nc-icon nc-album-2"></i>
+                <p style="font-weight: 600;">Posts</p>
+            </a>
+        </li>
+    </ul>
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title" style="color: #ef8157;font-weight:600;">All Posts</h4>
+            </div>
+            <div class="card-body">
+                <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr role="row">
+                            <th>AgencyName</th>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>PostDate</th>
+                            <th>Destination</th>
+                            <th>Details</th>
+                            <th>Accepted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var post = Model[i];
+                            <tr>
+                                <td>@post.AgencyName</td>
+                                <td>@post.Title</td>
+                                <td>@post.Date</td>
+                                <td>@post.PostDate</td>
+                                <td>@post.Destination</td>
+                                <td>@post.Details</td>
+                                @if (post.Accepted == true)
+                                {
+                                    <td class="text-center p-0" style="">
+                                        <i class="fa fa-check-circle-o fa-lg" style="color:green;"></i>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="text-center p-0" style="">
+                                        <i class="fa fa-times-circle-o fa-lg" style="color:red;"></i>
+                                    </td>
+                                }
+                            <td class="text-right p-0" style="">
+                                @if (post.Accepted == false)
+                                {
+                                    <a asp-controller="Admin" asp-action="ApprovePost" asp-route-PostID=@post.Id class="btn btn-info btn-link btn-icon btn-sm like"><i class="fa fa-thumbs-up"></i></a>
+                                }
+                                <button type="button" class="btn btn-warning btn-link btn-icon btn-sm edit" data-toggle="modal" data-target="#All-@i"><i class="fa fa-edit"></i></button>
+                                <div class="modal fade text-left" id="All-@i" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Edit Post</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form asp-controller="Admin" asp-action="Posts" method="post">
+                                                <div class="modal-body">
+                                                    <div class="container-fluid">
+                                                        @if (post.PhotoPath == null)
+                                                        {
+                                                            <img data-src="holder.js/100px250/" style="height:250px;width:100%;" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/Images/Avatars/@post.PhotoPath" style="height:250px;width:100%;" />
+                                                        }
+                                                        <hr />
+                                                        <input type="hidden" asp-for="@post.Id" />
+                                                        <div class="form-group">
+                                                            <label asp-for="@post.Title"></label>
+                                                            <input asp-for="@post.Title" class="form-control" required />
+                                                            <span asp-validation-for="@post.Title" class="field-validation-error"></span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label asp-for="@post.Destination"></label>
+                                                            <input asp-for="@post.Destination" class="form-control" required/>
+                                                            <span asp-validation-for="@post.Destination" class="field-validation-error"></span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label asp-for="@post.Details"></label>
+                                                            <input asp-for="@post.Details" class="form-control" required/>
+                                                            <span asp-validation-for="@post.Details" class="field-validation-error"></span>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a asp-controller="Admin" asp-action="DeletePost" asp-route-PostID=@post.Id class="btn btn-danger btn-link btn-icon btn-sm remove"><i class="fa fa-times"></i></a>
+                            </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div><!-- end content-->
+        </div><!--  end card  -->
+    </div> <!-- end col-md-12 -->
+</div>

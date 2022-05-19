@@ -1,0 +1,119 @@
+﻿@inject SignInManager<ApplicationUser> signInManager
+@inject UserManager<ApplicationUser> userManager
+@inject AppDBContext db
+
+@{
+    ViewData["Title"] = "Saved";
+    Layout = "_WallLayout";
+    ViewBag.Nav = "default";
+    ViewBag.footer = false;
+}
+
+@{
+    ApplicationUser user = null;
+    if (signInManager.IsSignedIn(User))
+    {
+        user = await userManager.FindByNameAsync(User.Identity.Name);
+    }
+
+
+
+    var Posts = db.SavedPosts
+        .Where(e => e.userID == user.Id)
+        .Include(e=>e.post)
+        .ThenInclude(e=>e.Owner)
+        .Include(e => e.post)
+        .ThenInclude(e => e.Likedby)
+        .Include(e => e.post)
+        .ThenInclude(e => e.Dislikedby)
+        .Select(e => e.post)
+        .ToList();
+
+}
+
+
+@section DropDown{
+    <div class="dropdown-menu dropdown-menu-right dropdown-danger">
+        @if (!signInManager.IsSignedIn(User))
+        {
+            <partial name="_SignInForm" />
+            <partial name="_register" />
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">
+                Logout
+            </a>
+        }
+    </div>
+}
+
+
+
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-12 ml-auto mr-auto text-center">
+                <h2 class="discover-title"><small>Saved Trips</small></h2>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            @foreach (var post in Posts)
+            {
+
+
+
+                <div class="col-lg-4 col-md-6 text-center">
+                    <div class="card no-transition">
+                        <div class="card-header bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="mr-2">
+                                        @if (post.Owner.PhotoPath == null)
+                                        {
+                                            <img class="rounded-circle" width="45" src="~/Images/default-avatar.png" alt="">
+                                        }
+                                        else
+                                        {
+                                            <img class="rounded-circle" width="45" src="~/Images/Avatars/@post.Owner.PhotoPath" alt="">
+                                        }
+                                    </div>
+                                    <div class="ml-2">
+                                        <div class="h5 m-0" style="font-weight: bold; color: #f5593d;">@@@post.AgencyName</div>
+                                        <div class="h7 text-muted">@post.Title</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-image">
+                            @if (post.PhotoPath == null)
+                            {
+                                <img class="img" style="border-radius:0px;width:100%;height:250px;" src="~/Images/default-cover.jpg">
+                            }
+                            else
+                            {
+                                <img class="img" style="border-radius: 0px; width: 100%; height: 250px;" src="~/Images/Posts/@post.PhotoPath" />
+                            }
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-left">
+                                @post.Destination
+                            </h5>
+
+                            <p class="card-text text-left">
+                                @post.Details
+                            </p>
+                            <div class="stats">
+                                <i class="fa fa-thumbs-up" aria-hidden="true"></i><span style="font-weight:bold;">@post.Likedby.Count</span>
+                                <i class="fa fa-thumbs-down" aria-hidden="true"></i><span style="font-weight:bold;"> @post.Dislikedby.Count </span>
+                                <i class="fa fa-calendar" aria-hidden="true"></i><span style="font-weight:bold;">@post.Date </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>

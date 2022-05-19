@@ -1,0 +1,29 @@
+﻿@model LoginViewModel
+
+<span style="cursor:pointer" class="dropdown-item" data-toggle="modal" data-target="#signIn">
+    Sign In
+</span>
+<div class="modal fade text-left" id="signIn" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="card card-register ml-auto mr-auto modal-content">
+            <h3 class="card-title">Welcome</h3>
+            <form class="register-form" method="post" asp-controller="Account" asp-action="login">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control no-border" />
+                <span asp-validation-for="UserName"></span>
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control no-border" />
+                <span asp-validation-for="Password"></span>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input asp-for="RememberMe" class="form-check-input" type="checkbox" value="">
+                        Remember Me
+                        <span class="form-check-sign"></span>
+                    </label>
+                </div>
+                <div asp-validation-summary="All" class="field-validation-error">@ViewBag.LoginError</div>
+                <button class="btn btn-danger btn-block btn-round">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
